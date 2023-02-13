@@ -4,19 +4,21 @@ const ejs = require("ejs");
 const app = express();
 const bodyParser = require("body-parser");
 const mongoose = require("mongoose");
+const encrypt = require("mongoose-encryption");
 mongoose.connect("mongodb://127.0.0.1:27017/UserDB", function(err){
     if(err){
     console.log(err);
     }
 });
 
-const userSchema = {
+const userSchema = new mongoose.Schema({
     email: String,
     password: String
-};
+});
 
+const secret = "secret";
+userSchema.plugin(encrypt, {secret: secret, encryptedFields: ["password"]});
 const  User = mongoose.model("User", userSchema);
-
 
 app.use(bodyParser.urlencoded({ extended: true }));
 app.set('view engine', 'ejs');
@@ -61,7 +63,7 @@ app.post("/login", function(req, res){
         else{
             if(foundUser){
                 if(foundUser.password === password){
-                    res.send("user Found");
+                    res.render("secrets");
                 }
             }
             
