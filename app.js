@@ -3,13 +3,26 @@ const express = require("express");
 const ejs = require("ejs");
 const app = express();
 const bodyParser = require("body-parser");
+const mongoose = require("mongoose");
+mongoose.connect("mongodb://127.0.0.1:27017/UserDB", function(err){
+    if(err){
+    console.log(err);
+    }
+});
+
+const userSchema = {
+    email: String,
+    password: String
+};
+
+const  User = mongoose.model("User", userSchema);
 
 
 app.use(bodyParser.urlencoded({ extended: true }));
 app.set('view engine', 'ejs');
 app.use(express.static(__dirname + "/public/"));
 
-app.get("/home", function(req, res){
+app.get("/", function(req, res){
     res.render("home");
 });
 
@@ -20,6 +33,10 @@ app.get("/login", function(req, res){
 app.get("/register", function(req, res){
     res.render("register");
 });
+
+app.post("/register", function(res, req){
+
+})
 
 
 
